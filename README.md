@@ -11,7 +11,7 @@ logic from infrastructure.
 ## 🏗 Architectural Design
 
 The solution follows the **Dependency Rule**, where source code
-dependencies only point inwards.\
+dependencies only point inwards.
 The core business logic knows nothing about the database, the web
 framework, or external services.
 
@@ -21,33 +21,33 @@ framework, or external services.
 
 ### **1. Domain Layer (`src/domain`)**
 
-- **Role:** Enterprise business rules\
+- **Role:** Enterprise business rules
 - **Contents:** Entities (`User`, `CacheStats`), Repository Interfaces
-  (Ports)\
+  (Ports)
 - **Dependencies:** None --- pure TypeScript
 
 ### **2. Application Layer (`src/application`)**
 
-- **Role:** Application business logic (Use Cases)\
-- **Contents:** `GetUserUseCase`, `CreateUserUseCase`\
+- **Role:** Application business logic (Use Cases)
+- **Contents:** `GetUserUseCase`, `CreateUserUseCase`
 - **Logic Flow:**
-  - Check Cache\
-  - If cache miss → Queue DB Fetch\
-  - Update Cache\
+  - Check Cache
+  - If cache miss → Queue DB Fetch
+  - Update Cache
   - Return response
 
 ### **3. Interface Adapters Layer (`src/interfaces`)**
 
-- **Role:** Data conversion between use cases and external I/O\
+- **Role:** Data conversion between use cases and external I/O
 - **Contents:** `UserController`
 
 ### **4. Infrastructure Layer (`src/infrastructure`)**
 
-- **Role:** Frameworks and drivers\
+- **Role:** Frameworks and drivers
 - **Contents:**
   - **Repositories:** `InMemoryLRUCacheRepository`,
-    `MockUserRepository`\
-  - **Services:** `PrometheusMonitoringService`\
+    `MockUserRepository`
+  - **Services:** `PrometheusMonitoringService`
   - **Web:** Express server, Rate Limit Middleware
 
 ---
@@ -56,10 +56,10 @@ framework, or external services.
 
 ### **1. Advanced Caching (LRU Strategy)**
 
-- Custom in-memory **Least Recently Used (LRU)** cache\
-- **TTL:** 60 seconds\
-- **Max Capacity:** 100 items\
-- **Cleanup:** Background interval every 10 seconds\
+- Custom in-memory **Least Recently Used (LRU)** cache
+- **TTL:** 60 seconds
+- **Max Capacity:** 100 items
+- **Cleanup:** Background interval every 10 seconds
 - **File:**
   `src/infrastructure/repositories/InMemoryLRUCacheRepository.ts`
 
@@ -67,16 +67,16 @@ framework, or external services.
 
 ### **2. Concurrency & Request Coalescing**
 
-- Avoids duplicate DB fetches for simultaneous requests\
+- Avoids duplicate DB fetches for simultaneous requests
 - If a request for the same ID is already in-flight, other requests
-  **subscribe** to the same Promise\
+  **subscribe** to the same Promise
 - **File:** `src/infrastructure/repositories/MockUserRepository.ts`
 
 ---
 
 ### **3. Asynchronous Processing Queue**
 
-- Simple in-memory queue throttling DB access\
+- Simple in-memory queue throttling DB access
 - Prevents system overload with controlled concurrency
 
 ---
@@ -85,7 +85,7 @@ framework, or external services.
 
 Algorithm: **Token Bucket / Sliding Window**
 
-Rules: - **10 req/min** standard limit\
+Rules: - **10 req/min** standard limit
 
 - **5 req / 10 sec** burst limit
 
@@ -126,7 +126,7 @@ Tracked Metrics: - `http_request_duration_ms` - `cache_hits_total` -
 ### **Installation**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/QaziDanish/backend-assignment.git
 cd backend-assignment
 npm install
 ```
@@ -156,9 +156,9 @@ Server runs on **port 3000**.
 
 **GET** `http://localhost:3000/users/1`
 
-Expected: - First request: \~200ms (**Cache Miss**)\
+Expected: - First request: \~200ms (**Cache Miss**)
 
-- Second request: \~1--5ms (**Cache Hit**)\
+- Second request: \~1--5ms (**Cache Hit**)
 - 10 parallel requests → only **one** DB operation
 
 ---
