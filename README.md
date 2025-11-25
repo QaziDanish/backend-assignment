@@ -1,4 +1,4 @@
-# Expert-Level User Data API (Clean Architecture)
+# Back-end User Data API (Clean Architecture)
 
 A high-performance, robust Express.js API designed to serve user data
 with advanced caching, rate limiting, and asynchronous processing. This
